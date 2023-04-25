@@ -1,4 +1,4 @@
-defmodule GraphqlUserApiWeb.Repo.Boundary.DataServer do
+defmodule GraphqlUserApiWeb.Data.DataServer do
   use GenServer
 
   def start_link(initial_state),

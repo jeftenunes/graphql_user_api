@@ -2,7 +2,7 @@ defmodule GraphqlUserApi.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
-  alias GraphqlUserApiWeb.Repo.Boundary.DataServer
+  alias GraphqlUserApiWeb.Data.DataServer
 
   use Application
 

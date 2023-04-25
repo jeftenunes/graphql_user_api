@@ -3,7 +3,6 @@ defmodule GraphqlUserApiWeb.Schema do
 
   import_types(GraphqlUserApiWeb.Schema.ContentTypes.User)
   import_types(GraphqlUserApiWeb.Schema.ContentTypes.Preference)
-  import_types(GraphqlUserApiWeb.Schema.InputTypes.PreferenceInput)
   import_types(GraphqlUserApiWeb.Schema.Queries.Users)
   import_types(GraphqlUserApiWeb.Schema.Mutations.Users)
   import_types(GraphqlUserApiWeb.Schema.Mutations.Preferences)
@@ -36,12 +35,12 @@ defmodule GraphqlUserApiWeb.Schema do
       arg(:user_id, :id)
 
       trigger(:update_user_preferences,
-        topic: fn _ ->
-          "preferences_updated"
+        topic: fn args ->
+          "preferences_updated_#{args.user_id}"
         end
       )
 
-      config(fn _, _ -> {:ok, topic: "preferences_updated"} end)
+      config(fn args, _ -> {:ok, topic: "preferences_updated_#{args.user_id}"} end)
     end
   end
 end
