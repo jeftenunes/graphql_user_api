@@ -49,7 +49,8 @@ defmodule GraphqlUserApi.User do
   end
 
   defp filter_users_by_preferences(user, preferences) do
-    Enum.map(preferences, fn {pref, val} -> user.preferences[pref] === val end)
+    preferences
+    |> Enum.map(fn {pref, val} -> user.preferences[pref] === val end)
     |> Enum.reduce(fn filter_result, acc -> acc && filter_result end)
   end
 
