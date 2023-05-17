@@ -7,4 +7,10 @@ defmodule GraphqlUserApiWeb.Schema.ContentTypes.Preference do
     field(:likes_emails, :boolean)
     field(:likes_phone_calls, :boolean)
   end
+
+  input_object :preference_input do
+    field(:likes_faxes, :boolean)
+    field(:likes_emails, :boolean)
+    field(:likes_phone_calls, :boolean)
+  end
 end
