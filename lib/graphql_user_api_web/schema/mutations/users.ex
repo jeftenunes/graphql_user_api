@@ -4,7 +4,6 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.Users do
 
   object :users_mutations do
     field :create_user, :user do
-      arg(:id, :id)
       arg(:name, :string)
       arg(:email, :string)
       arg(:preferences, :preference_input)

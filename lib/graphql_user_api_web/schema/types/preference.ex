@@ -1,4 +1,4 @@
-defmodule GraphqlUserApiWeb.Schema.ContentTypes.Preference do
+defmodule GraphqlUserApiWeb.Schema.Types.Preference do
   use Absinthe.Schema.Notation
 
   object :preference do

@@ -1,4 +1,4 @@
-defmodule GraphqlUserApiWeb.Schema.ContentTypes.User do
+defmodule GraphqlUserApiWeb.Schema.Types.User do
   use Absinthe.Schema.Notation
 
   object :user do

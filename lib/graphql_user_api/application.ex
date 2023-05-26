@@ -18,7 +18,7 @@ defmodule GraphqlUserApi.Application do
       # Start the Endpoint (http/https)
       GraphqlUserApiWeb.Endpoint,
       {Absinthe.Subscription, GraphqlUserApiWeb.Endpoint},
-      DataServer
+      GraphqlUserApi.Repo
       # Start a worker by calling: GraphqlUserApi.Worker.start_link(arg)
       # {GraphqlUserApi.Worker, arg}
     ]

@@ -7,6 +7,12 @@
 # General application configuration
 import Config
 
+config :graphql_user_api, GraphqlUserApi.Repo,
+  database: "graphql_user_api_repo",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost"
+
 # Configures the endpoint
 config :graphql_user_api, GraphqlUserApiWeb.Endpoint,
   url: [host: "localhost"],
@@ -59,3 +65,10 @@ config :phoenix, :json_library, Jason
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
+
+config :graphql_user_api,
+  ecto_repos: [GraphqlUserApi.Repo]
+
+config :ecto_shorts,
+  repo: GraphqlUserApi.Repo,
+  error_module: EctoShorts.Actions.Error
