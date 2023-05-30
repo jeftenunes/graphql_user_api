@@ -17,6 +17,5 @@ defmodule GraphqlUserApi.Accounts.Preference do
     preference
     |> cast(attrs, @available_fields)
     |> validate_required(@available_fields)
-    |> put_assoc(:user, attrs.user)
   end
 end

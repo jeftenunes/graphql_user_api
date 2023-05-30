@@ -48,7 +48,8 @@ defmodule GraphqlUserApi.MixProject do
       {:absinthe_phoenix, "~> 2.0"},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
-      {:ecto_shorts, "~> 2.3"}
+      {:ecto_shorts, "~> 2.3"},
+      {:dataloader, "~> 1.0.0"}
     ]
   end
 

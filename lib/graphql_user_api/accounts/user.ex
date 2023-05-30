@@ -5,6 +5,8 @@ defmodule GraphqlUserApi.Accounts.User do
   schema "users" do
     field(:email, :string)
     field(:name, :string)
+
+    has_one(:preferences, GraphqlUserApi.Accounts.Preference)
   end
 
   @available_fields [:name, :email]
@@ -14,5 +16,6 @@ defmodule GraphqlUserApi.Accounts.User do
     user
     |> cast(attrs, @available_fields)
     |> validate_required(@available_fields)
+    |> cast_assoc(:preferences)
   end
 end
