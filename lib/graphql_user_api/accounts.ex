@@ -22,20 +22,12 @@ defmodule GraphqlUserApi.Accounts do
       from u in User,
         left_join: p in Preference,
         on: u.id == p.user_id,
-        where: ^filter_where(params),
-        select: %User{
-          id: u.id,
-          name: u.name,
-          email: u.email,
-          preferences: %Preference{
-            id: p.id,
-            likes_emails: p.likes_emails,
-            likes_faxes: p.likes_faxes,
-            likes_phone_calls: p.likes_phone_calls
-          }
-        }
+        select: u
 
-    {:ok, Repo.all(qry)}
+    filtered_by_preferences_qry = Enum.reduce(params, qry,
+      fn {field, val}, q -> where(q, [u, p], field(p, ^field) == ^val) end)
+
+    {:ok, Repo.all(filtered_by_preferences_qry)}
   end
 
   def update_user_preferences(user_id, preferences) do
@@ -49,21 +41,5 @@ defmodule GraphqlUserApi.Accounts do
 
   def update_user(id, %{name: _name, email: _email} = params) do
     Actions.find_and_update(User, %{id: id, preload: :preferences}, params)
-  end
-
-  defp filter_where(params) do
-    Enum.reduce(params, dynamic(true), fn
-      {:likes_faxes, value}, dynamic ->
-        dynamic([u, p], ^dynamic and p.likes_faxes == ^value)
-
-      {:likes_emails, value}, dynamic ->
-        dynamic([u, p], ^dynamic and p.likes_emails == ^value)
-
-      {:likes_phone_calls, value}, dynamic ->
-        dynamic([u, p], ^dynamic and p.likes_phone_calls == ^value)
-
-      {_, _}, dynamic ->
-        dynamic
-    end)
   end
 end
