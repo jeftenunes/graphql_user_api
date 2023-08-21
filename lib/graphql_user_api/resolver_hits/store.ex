@@ -14,8 +14,11 @@ defmodule GraphqlUserApi.ResolverHits.Store do
 
   def increment_hits_for(resolver) do
     case Agent.get(__MODULE__, fn state -> Map.get(state, resolver) end) do
-      nil -> Agent.update(__MODULE__, fn state -> Map.put(state, resolver, 1) end)
-      actual_hits_no -> Agent.update(__MODULE__, fn state -> Map.put(state, resolver, actual_hits_no + 1) end)
+      nil ->
+        Agent.update(__MODULE__, fn state -> Map.put(state, resolver, 1) end)
+
+      actual_hits_no ->
+        Agent.update(__MODULE__, fn state -> Map.put(state, resolver, actual_hits_no + 1) end)
     end
 
     {:ok, :noreply}

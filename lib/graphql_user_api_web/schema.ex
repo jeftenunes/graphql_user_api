@@ -40,8 +40,8 @@ defmodule GraphqlUserApiWeb.Schema do
   end
 
   def middleware(middleware, _field, %Absinthe.Type.Object{identifier: identifier})
-    when identifier in [:query, :subscription, :mutation] do
-      middleware ++ [ResolverHitMiddleware]
+      when identifier in [:query, :subscription, :mutation] do
+    middleware ++ [ResolverHitMiddleware]
   end
 
   def middleware(middleware, _field, _object) do

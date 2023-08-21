@@ -7,9 +7,15 @@ config :graphql_user_api, GraphqlUserApiWeb.Endpoint,
   secret_key_base: "vfgbk8i9W/mZcgEHXEN+CEbz1Rmc+n6+VXVRokKsUGutspx/tQ6CnvzYO4kILXhn",
   server: false
 
+config :graphql_user_api, GraphqlUserApi.Repo,
+  database: "graphql_user_api_repo_test",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
+
 # In test we don't send emails.
-config :graphql_user_api, GraphqlUserApi.Mailer,
-  adapter: Swoosh.Adapters.Test
+config :graphql_user_api, GraphqlUserApi.Mailer, adapter: Swoosh.Adapters.Test
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false

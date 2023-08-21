@@ -19,13 +19,16 @@ defmodule GraphqlUserApi.Accounts do
 
   def all_users(params \\ %{}) do
     qry =
-      from u in User,
+      from(u in User,
         left_join: p in Preference,
         on: u.id == p.user_id,
         select: u
+      )
 
-    filtered_by_preferences_qry = Enum.reduce(params, qry,
-      fn {field, val}, q -> where(q, [u, p], field(p, ^field) == ^val) end)
+    filtered_by_preferences_qry =
+      Enum.reduce(params, qry, fn {field, val}, q ->
+        where(q, [u, p], field(p, ^field) == ^val)
+      end)
 
     {:ok, Repo.all(filtered_by_preferences_qry)}
   end
