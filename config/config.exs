@@ -15,6 +15,7 @@ config :graphql_user_api, GraphqlUserApi.Repo,
 
 # Configures the endpoint
 config :graphql_user_api, GraphqlUserApiWeb.Endpoint,
+  server: true,
   url: [host: "localhost"],
   render_errors: [
     formats: [json: GraphqlUserApiWeb.ErrorJSON],

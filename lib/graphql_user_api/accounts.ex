@@ -37,12 +37,19 @@ defmodule GraphqlUserApi.Accounts do
     op_result = Actions.find_and_update(Preference, %{user_id: user_id}, preferences)
 
     case op_result do
-      {:error, _} -> {:error, "preferences not found"}
+      {:error, %{code: :not_found}} -> {:error, "preferences not found"}
+      {:error, _} -> {:error, "error updating preferences"}
       {:ok, result} -> {:ok, result}
     end
   end
 
   def update_user(id, %{name: _name, email: _email} = params) do
-    Actions.find_and_update(User, %{id: id, preload: :preferences}, params)
+    op_result = Actions.find_and_update(User, %{id: id, preload: :preferences}, params)
+
+    case op_result do
+      {:error, %{code: :not_found}} -> {:error, "user not found"}
+      {:error, _} -> {:error, "error updating users"}
+      {:ok, result} -> {:ok, result}
+    end
   end
 end
