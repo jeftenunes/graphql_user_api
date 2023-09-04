@@ -73,7 +73,7 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.PreferencesTest do
 
     test "should not update an user preferences - missing parameter: userId" do
       # arrange
-      assert {:ok, created_user} =
+      assert {:ok, _created_user} =
                Accounts.new_user(%{
                  :name => "name",
                  :email => "email",
