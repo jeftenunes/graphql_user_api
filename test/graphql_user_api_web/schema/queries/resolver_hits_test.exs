@@ -241,7 +241,7 @@ defmodule GraphqlUserApiWeb.Schema.Queries.ResolverHitsTest do
                  }
                )
 
-      assert {:ok, %{data: data}} =
+      assert {:ok, %{data: _data}} =
                Absinthe.run(@update_preferences_doc, GraphqlUserApiWeb.Schema,
                  variables: %{
                    "userId" => to_string(created_usr["createUser"]["id"]),

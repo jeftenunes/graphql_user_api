@@ -4,11 +4,16 @@ defmodule GraphqlUserApiWeb.Middlewares.ResolverHitMiddleware do
   alias GraphqlUserApi.ResolverHits
 
   def call(resolution, _config) do
-    [{_, %{id: _id, middleware: middleware}}] = resolution.middleware
-    {_, f} = List.first(middleware)
+    case resolution.middleware do
+      [{_, %{id: _id, middleware: middleware}}] ->
+        {_, f} = List.first(middleware)
 
-    ResolverHits.hit_resolver(to_string(Function.info(f)[:name]))
+        ResolverHits.hit_resolver(to_string(Function.info(f)[:name]))
 
-    resolution
+        resolution
+
+      [] ->
+        resolution
+    end
   end
 end
