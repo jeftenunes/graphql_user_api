@@ -2,11 +2,8 @@ defmodule GraphqlUserApi.Accounts do
   @moduledoc """
   The Accounts context.
   """
-
-  import Ecto.Query, warn: false
   alias GraphqlUserApiWeb.Schema.Types.Preference
   alias GraphqlUserApi.Accounts.{User, Preference}
-  alias GraphqlUserApi.Repo
   alias EctoShorts.Actions
 
   def new_user(%{name: _name, email: _email, preferences: _preferences} = params) do
@@ -18,19 +15,7 @@ defmodule GraphqlUserApi.Accounts do
   end
 
   def all_users(params \\ %{}) do
-    qry =
-      from(u in User,
-        left_join: p in Preference,
-        on: u.id == p.user_id,
-        select: u
-      )
-
-    filtered_by_preferences_qry =
-      Enum.reduce(params, qry, fn {field, val}, q ->
-        where(q, [u, p], field(p, ^field) == ^val)
-      end)
-
-    {:ok, Repo.all(filtered_by_preferences_qry)}
+    {:ok, User.all_users_by(params)}
   end
 
   def update_user_preferences(user_id, preferences) do

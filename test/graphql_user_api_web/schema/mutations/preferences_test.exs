@@ -18,9 +18,9 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.PreferencesTest do
       # arrange
       assert {:ok, created_user} =
                Accounts.new_user(%{
-                 :name => "name",
-                 :email => "email",
-                 :preferences => %{
+                 name: "name",
+                 email: "email",
+                 preferences: %{
                    "likes_faxes" => true,
                    "likes_emails" => false,
                    "likes_phone_calls" => true
@@ -47,9 +47,9 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.PreferencesTest do
       # arrange
       assert {:ok, created_user} =
                Accounts.new_user(%{
-                 :name => "name",
-                 :email => "email",
-                 :preferences => %{
+                 name: "name",
+                 email: "email",
+                 preferences: %{
                    "likes_faxes" => true,
                    "likes_emails" => false,
                    "likes_phone_calls" => true
@@ -75,9 +75,9 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.PreferencesTest do
       # arrange
       assert {:ok, _created_user} =
                Accounts.new_user(%{
-                 :name => "name",
-                 :email => "email",
-                 :preferences => %{
+                 name: "name",
+                 email: "email",
+                 preferences: %{
                    "likes_faxes" => true,
                    "likes_emails" => false,
                    "likes_phone_calls" => true
