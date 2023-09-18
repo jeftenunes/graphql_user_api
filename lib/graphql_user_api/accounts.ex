@@ -2,6 +2,8 @@ defmodule GraphqlUserApi.Accounts do
   @moduledoc """
   The Accounts context.
   """
+
+  alias GraphqlUserApi.Repo
   alias GraphqlUserApiWeb.Schema.Types.Preference
   alias GraphqlUserApi.Accounts.{User, Preference}
   alias EctoShorts.Actions
@@ -15,7 +17,7 @@ defmodule GraphqlUserApi.Accounts do
   end
 
   def all_users(params \\ %{}) do
-    {:ok, User.all_users_by(params)}
+    {:ok, User.all_users_by(params) |> Repo.all()}
   end
 
   def update_user_preferences(user_id, preferences) do

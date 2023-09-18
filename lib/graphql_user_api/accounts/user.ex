@@ -3,7 +3,6 @@ defmodule GraphqlUserApi.Accounts.User do
   import Ecto.Changeset
   import Ecto.Query, warn: false
 
-  alias GraphqlUserApi.Repo
   alias GraphqlUserApi.Accounts.{User, Preference}
 
   schema "users" do
@@ -31,11 +30,8 @@ defmodule GraphqlUserApi.Accounts.User do
         select: u
       )
 
-    filtered_by_preferences_qry =
-      Enum.reduce(params, qry, fn {field, val}, q ->
-        where(q, [u, p], field(p, ^field) == ^val)
-      end)
-
-    Repo.all(filtered_by_preferences_qry)
+    Enum.reduce(params, qry, fn {field, val}, q ->
+      where(q, [u, p], field(p, ^field) == ^val)
+    end)
   end
 end

@@ -10,12 +10,12 @@ defmodule GraphqlUserApi.ResolverHits.StoreTest do
 
   describe "&increment_hits_for/2" do
     test "should increment the count of hits for a resolver" do
-      assert {:ok, 0} = Store.get_hits(%{key: "resolver_test"})
+      assert 0 = Store.get_hits("resolver_test")
 
-      assert {:ok, :noreply} = Store.increment_hits_for(%{key: "resolver_test"})
-      assert {:ok, :noreply} = Store.increment_hits_for(%{key: "resolver_test"})
+      assert :ok = Store.increment_hits_for("resolver_test")
+      assert :ok = Store.increment_hits_for("resolver_test")
 
-      assert {:ok, 2} = Store.get_hits(%{key: "resolver_test"})
+      assert 2 = Store.get_hits("resolver_test")
     end
   end
 end
