@@ -1,6 +1,9 @@
 defmodule GraphqlUserApi.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query, warn: false
+
+  alias GraphqlUserApi.Accounts.{User, Preference}
 
   schema "users" do
     field(:email, :string)
@@ -17,5 +20,18 @@ defmodule GraphqlUserApi.Accounts.User do
     |> cast(attrs, @available_fields)
     |> validate_required(@available_fields)
     |> cast_assoc(:preferences)
+  end
+
+  def all_users_by(params \\ %{}) do
+    qry =
+      from(u in User,
+        left_join: p in Preference,
+        on: u.id == p.user_id,
+        select: u
+      )
+
+    Enum.reduce(params, qry, fn {field, val}, q ->
+      where(q, [u, p], field(p, ^field) == ^val)
+    end)
   end
 end

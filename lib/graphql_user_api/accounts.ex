@@ -3,10 +3,9 @@ defmodule GraphqlUserApi.Accounts do
   The Accounts context.
   """
 
-  import Ecto.Query, warn: false
+  alias GraphqlUserApi.Repo
   alias GraphqlUserApiWeb.Schema.Types.Preference
   alias GraphqlUserApi.Accounts.{User, Preference}
-  alias GraphqlUserApi.Repo
   alias EctoShorts.Actions
 
   def new_user(%{name: _name, email: _email, preferences: _preferences} = params) do
@@ -18,28 +17,26 @@ defmodule GraphqlUserApi.Accounts do
   end
 
   def all_users(params \\ %{}) do
-    qry =
-      from u in User,
-        left_join: p in Preference,
-        on: u.id == p.user_id,
-        select: u
-
-    filtered_by_preferences_qry = Enum.reduce(params, qry,
-      fn {field, val}, q -> where(q, [u, p], field(p, ^field) == ^val) end)
-
-    {:ok, Repo.all(filtered_by_preferences_qry)}
+    {:ok, User.all_users_by(params) |> Repo.all()}
   end
 
   def update_user_preferences(user_id, preferences) do
     op_result = Actions.find_and_update(Preference, %{user_id: user_id}, preferences)
 
     case op_result do
-      {:error, _} -> {:error, "preferences not found"}
+      {:error, %{code: :not_found}} -> {:error, "user not found"}
+      {:error, _} -> {:error, "error updating preferences"}
       {:ok, result} -> {:ok, result}
     end
   end
 
   def update_user(id, %{name: _name, email: _email} = params) do
-    Actions.find_and_update(User, %{id: id, preload: :preferences}, params)
+    op_result = Actions.find_and_update(User, %{id: id, preload: :preferences}, params)
+
+    case op_result do
+      {:error, %{code: :not_found}} -> {:error, "user not found"}
+      {:error, _} -> {:error, "error updating users"}
+      {:ok, result} -> {:ok, result}
+    end
   end
 end
