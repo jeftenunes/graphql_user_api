@@ -1,6 +1,11 @@
 defmodule GraphqlUserApiWeb.Schema do
-  alias GraphqlUserApiWeb.Middlewares.ResolverHitMiddleware
   use Absinthe.Schema
+
+  alias GraphqlUserApiWeb.Middlewares.{
+    ResolverHitMiddleware,
+    ChangesetMiddleware,
+    PayloadValidationMiddleware
+  }
 
   import_types(GraphqlUserApiWeb.Schema.Types.User)
   import_types(GraphqlUserApiWeb.Schema.Types.Preference)
@@ -37,6 +42,12 @@ defmodule GraphqlUserApiWeb.Schema do
 
   def plugins do
     [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
+  end
+
+  def middleware(middleware, _field, %{identifier: identifier})
+      when identifier in [:mutation, :query] do
+    # [PayloadValidationMiddleware | middleware ++ [ChangesetMiddleware]]
+    middleware ++ [ChangesetMiddleware]
   end
 
   def middleware(middleware, _field, %Absinthe.Type.Object{identifier: identifier})

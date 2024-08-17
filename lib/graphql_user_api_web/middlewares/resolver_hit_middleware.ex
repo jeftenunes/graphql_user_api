@@ -3,6 +3,7 @@ defmodule GraphqlUserApiWeb.Middlewares.ResolverHitMiddleware do
 
   alias GraphqlUserApi.ResolverHits
 
+  @impl true
   def call(resolution, _config) do
     case resolution.middleware do
       [{_, %{id: _id, middleware: middleware}}] ->
