@@ -1,7 +1,7 @@
 defmodule GraphqlUserApiWeb.Schema.Queries.UserTest do
   use GraphqlUserApi.DataCase
 
-  alias GraphqlUserApi.Accounts
+  alias GraphqlUserApi.{Accounts, AccountsFixtures}
 
   @users_by_preferences_doc """
     query UsersByPreferences($likesFaxes: Boolean, $likesEmails: Boolean, $likesPhoneCalls: Boolean) {
@@ -149,6 +149,32 @@ defmodule GraphqlUserApiWeb.Schema.Queries.UserTest do
 
       assert test_usr.preferences.likes_phone_calls ==
                data["user"]["preferences"]["likesPhoneCalls"]
+    end
+
+    test "should not retrieve an user by id - not found" do
+      # act
+      {:ok, users} =
+        Accounts.all_users()
+
+      inexistent_id =
+        users
+        |> Enum.map(fn u -> u.id end)
+        |> AccountsFixtures.find_non_existent_user_id()
+
+      assert {:ok, %{errors: errors}} =
+               Absinthe.run(@user_by_id_doc, GraphqlUserApiWeb.Schema,
+                 variables: %{
+                   "id" => to_string(inexistent_id)
+                 }
+               )
+
+      # assert
+
+      assert %{
+               code: :not_found,
+               message: "not found",
+               details: %{id: ^inexistent_id}
+             } = List.first(errors)
     end
   end
 end

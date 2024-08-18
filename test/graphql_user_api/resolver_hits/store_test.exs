@@ -1,6 +1,7 @@
 defmodule GraphqlUserApi.ResolverHits.StoreTest do
-  alias GraphqlUserApi.ResolverHits.Store
   use ExUnit.Case, async: true
+
+  alias GraphqlUserApi.ResolverHits.Store
 
   setup do
     {:ok, pid} = Store.start_link(name: nil)

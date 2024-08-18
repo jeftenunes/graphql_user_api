@@ -99,7 +99,39 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
                )
 
       assert List.first(errors)[:message] ==
-               "Variable \"preferences\": Expected non-null, found null."
+               "In argument \"preferences\": Expected type \"PreferenceInput!\", found null."
+    end
+
+    test "should not create an user - email conflicts" do
+      Absinthe.run(@create_user_doc, GraphqlUserApiWeb.Schema,
+        variables: %{
+          "name" => "Name test",
+          "email" => "email@test.com",
+          "preferences" => %{
+            "likesFaxes" => true,
+            "likesEmails" => true
+          }
+        }
+      )
+
+      assert {:ok, %{errors: errors}} =
+               Absinthe.run(@create_user_doc, GraphqlUserApiWeb.Schema,
+                 variables: %{
+                   "name" => "Name test",
+                   "email" => "email@test.com",
+                   "preferences" => %{
+                     "likesFaxes" => true,
+                     "likesEmails" => true
+                   }
+                 }
+               )
+
+      assert %{
+               code: :conflict,
+               message: "email@test.com has already been taken",
+               path: ["createUser"],
+               details: %{email: "email@test.com"}
+             } = List.first(errors)
     end
   end
 
@@ -132,7 +164,7 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
       assert data["updateUser"]["email"] == "updated email"
     end
 
-    test "should not update user - user not found" do
+    test "should not update user - not found" do
       # act
       assert {:ok, %{errors: errors}} =
                Absinthe.run(@update_user_doc, GraphqlUserApiWeb.Schema,
@@ -143,7 +175,12 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
                  }
                )
 
-      assert List.first(errors).message == "user not found"
+      assert %{
+               code: :not_found,
+               message: "not found",
+               path: ["updateUser"],
+               details: %{id: 0}
+             } = List.first(errors)
     end
 
     test "should not update user - missing parameter: id" do
@@ -157,7 +194,8 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
                )
 
       # assert
-      assert List.first(errors).message == "Variable \"id\": Expected non-null, found null."
+      assert List.first(errors).message ==
+               "In argument \"id\": Expected type \"ID!\", found null."
     end
 
     test "should not update user - missing parameter: name" do
@@ -185,7 +223,54 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
                )
 
       # assert
-      assert List.first(errors).message == "Variable \"email\": Expected non-null, found null."
+      assert List.first(errors).message ==
+               "In argument \"email\": Expected type \"String!\", found null."
+    end
+
+    test "should not update an user - email conflicts" do
+      {:ok, %{data: data1}} =
+        Absinthe.run(@create_user_doc, GraphqlUserApiWeb.Schema,
+          variables: %{
+            "name" => "Name",
+            "email" => "email1@test.com",
+            "preferences" => %{
+              "likesFaxes" => true,
+              "likesEmails" => true
+            }
+          }
+        )
+
+      {:ok, %{data: _data2}} =
+        Absinthe.run(@create_user_doc, GraphqlUserApiWeb.Schema,
+          variables: %{
+            "name" => "Name",
+            "email" => "email2@test.com",
+            "preferences" => %{
+              "likesFaxes" => true,
+              "likesEmails" => true
+            }
+          }
+        )
+
+      assert {:ok, %{errors: errors}} =
+               Absinthe.run(@update_user_doc, GraphqlUserApiWeb.Schema,
+                 variables: %{
+                   "id" => to_string(data1["createUser"]["id"]),
+                   "name" => "Name test 1",
+                   "email" => "email2@test.com",
+                   "preferences" => %{
+                     "likesFaxes" => true,
+                     "likesEmails" => true
+                   }
+                 }
+               )
+
+      assert %{
+               code: :conflict,
+               message: "email2@test.com has already been taken",
+               path: ["updateUser"],
+               details: %{email: "email2@test.com"}
+             } = List.first(errors)
     end
   end
 end

@@ -3,6 +3,7 @@ defmodule GraphqlUserApi.ResolverHits do
 
   def get_resolver_hit_count(%{key: key} = _) do
     hits_count = Store.get_hits(key)
+
     {:ok, %{:hits_count => hits_count}}
   end
 

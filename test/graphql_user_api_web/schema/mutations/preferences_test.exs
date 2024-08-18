@@ -112,7 +112,7 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.PreferencesTest do
                )
 
       # assert
-      assert List.first(errors).message == "user not found"
+      assert List.first(errors).message == "not found"
     end
   end
 end

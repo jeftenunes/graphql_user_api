@@ -1,13 +1,9 @@
 defmodule GraphqlUserApi.ErrorHandling.Handler do
-  alias GraphqlUserApi.ErrorHandling.ErrorMessageBuilder
+  alias GraphqlUserApi.ErrorHandling.ErrorMessageUtils
 
-  def extract_errors(%ErrorMessage{code: code, message: message, details: details} = error) do
-    ErrorMessage.to_jsonable_map(error)
-  end
-
-  def extract_errors(%{code: code} = error)
-      when code in [:conflict, :bad_request] do
-    error
+  def extract_errors(%ErrorMessage{code: _code, message: _message, details: _details} = error) do
+    error_message_map = ErrorMessage.to_jsonable_map(error)
+    ErrorMessageUtils.not_found("not found", error_message_map.details.params)
   end
 
   def extract_errors(changeset) do
@@ -21,12 +17,12 @@ defmodule GraphqlUserApi.ErrorHandling.Handler do
          field,
          {message, [constraint: :unique, constraint_name: _constraint_name]}
        ) do
-    ErrorMessageBuilder.conflict("#{changes[field]} #{message}", %{
+    ErrorMessageUtils.conflict("#{changes[field]} #{message}", %{
       field => changes[field]
     })
   end
 
   defp build_error_message(params, _, _) do
-    ErrorMessageBuilder.not_acceptable("Not acceptable payload", %{details: params})
+    ErrorMessageUtils.not_acceptable("Not acceptable payload", %{details: params})
   end
 end

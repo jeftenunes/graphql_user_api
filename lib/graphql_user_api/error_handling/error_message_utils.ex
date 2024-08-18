@@ -1,5 +1,5 @@
-defmodule GraphqlUserApi.ErrorHandling.ErrorMessageBuilder do
-  def not_found(message, %{id: _id} = details) do
+defmodule GraphqlUserApi.ErrorHandling.ErrorMessageUtils do
+  def not_found(message, details) do
     build_error(:not_found, message, details)
   end
 

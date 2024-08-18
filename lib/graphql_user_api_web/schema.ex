@@ -1,37 +1,33 @@
 defmodule GraphqlUserApiWeb.Schema do
   use Absinthe.Schema
 
-  alias GraphqlUserApiWeb.Middlewares.{
-    ResolverHitMiddleware,
-    ChangesetMiddleware,
-    PayloadValidationMiddleware
-  }
+  alias GraphqlUserApiWeb.Middlewares.{ResolverHitMiddleware, ChangesetMiddleware}
 
-  import_types(GraphqlUserApiWeb.Schema.Types.User)
-  import_types(GraphqlUserApiWeb.Schema.Types.Preference)
-  import_types(GraphqlUserApiWeb.Schema.Types.ResolverHit)
-  import_types(GraphqlUserApiWeb.Schema.Queries.Users)
-  import_types(GraphqlUserApiWeb.Schema.Mutations.Users)
-  import_types(GraphqlUserApiWeb.Schema.Mutations.Preferences)
-  import_types(GraphqlUserApiWeb.Schema.Subscriptions.Users)
-  import_types(GraphqlUserApiWeb.Schema.Subscriptions.Preferences)
-  import_types(GraphqlUserApiWeb.Schema.Queries.ResolverHits)
+  import_types GraphqlUserApiWeb.Schema.Types.User
+  import_types GraphqlUserApiWeb.Schema.Types.Preference
+  import_types GraphqlUserApiWeb.Schema.Types.ResolverHit
+  import_types GraphqlUserApiWeb.Schema.Queries.Users
+  import_types GraphqlUserApiWeb.Schema.Mutations.Users
+  import_types GraphqlUserApiWeb.Schema.Mutations.Preferences
+  import_types GraphqlUserApiWeb.Schema.Subscriptions.Users
+  import_types GraphqlUserApiWeb.Schema.Subscriptions.Preferences
+  import_types GraphqlUserApiWeb.Schema.Queries.ResolverHits
 
   @desc "Retrieves users/resolver hit counts"
   query do
-    import_fields(:users_queries)
-    import_fields(:resolver_hits_query)
+    import_fields :users_queries
+    import_fields :resolver_hits_query
   end
 
   @desc "Mutates users"
   mutation do
-    import_fields(:users_mutations)
-    import_fields(:preferences_mutations)
+    import_fields :users_mutations
+    import_fields :preferences_mutations
   end
 
   subscription do
-    import_fields(:users_subscriptions)
-    import_fields(:preferences_subscriptions)
+    import_fields :users_subscriptions
+    import_fields :preferences_subscriptions
   end
 
   def context(ctx) do
@@ -44,15 +40,13 @@ defmodule GraphqlUserApiWeb.Schema do
     [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
   end
 
-  def middleware(middleware, _field, %{identifier: identifier})
-      when identifier in [:mutation, :query] do
-    # [PayloadValidationMiddleware | middleware ++ [ChangesetMiddleware]]
-    middleware ++ [ChangesetMiddleware]
-  end
-
   def middleware(middleware, _field, %Absinthe.Type.Object{identifier: identifier})
       when identifier in [:query, :subscription, :mutation] do
-    middleware ++ [ResolverHitMiddleware]
+    if(identifier === :mutation) do
+      middleware ++ [ChangesetMiddleware, ResolverHitMiddleware]
+    else
+      middleware ++ [ResolverHitMiddleware]
+    end
   end
 
   def middleware(middleware, _field, _object) do
