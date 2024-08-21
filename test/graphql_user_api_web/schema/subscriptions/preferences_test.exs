@@ -1,5 +1,6 @@
 defmodule GraphqlUserApiWeb.Schema.Subscriptions.PreferencesTest do
   use GraphqlUserApi.DataCase
+  use GraphqlUserApiWeb.ConnCase
   use GraphqlUserApiWeb.SubscriptionCase
 
   alias GraphqlUserApi.Accounts
@@ -45,27 +46,28 @@ defmodule GraphqlUserApiWeb.Schema.Subscriptions.PreferencesTest do
 
       assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
-      ref =
-        push_doc(socket, @update_preferences_doc,
-          variables: %{
-            "userId" => usr.id,
-            "likesFaxes" => false,
-            "likesEmails" => true,
-            "likesPhoneCalls" => false
-          }
-        )
+      payload = %{
+        "userId" => usr.id,
+        "likesFaxes" => false,
+        "likesEmails" => true,
+        "likesPhoneCalls" => false
+      }
 
-      assert_reply ref, :ok, reply
+      response =
+        build_conn()
+        |> put_req_header("api_key", "api_key")
+        |> post("/graphql", %{query: @update_preferences_doc, variables: payload})
+        |> json_response(200)
 
       assert %{
-               data: %{
+               "data" => %{
                  "updateUserPreferences" => %{
                    "likesFaxes" => false,
                    "likesEmails" => true,
                    "likesPhoneCalls" => false
                  }
                }
-             } = reply
+             } = response
 
       assert_push "subscription:data", data
 
