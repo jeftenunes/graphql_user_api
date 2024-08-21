@@ -1,6 +1,7 @@
 defmodule GraphqlUserApiWeb.Schema.Mutations.Preferences do
   use Absinthe.Schema.Notation
 
+  alias GraphqlUserApiWeb.Middlewares.AuthMiddleware
   alias GraphqlUserApiWeb.Resolvers.PreferenceResolver
 
   object :preferences_mutations do
@@ -11,6 +12,7 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.Preferences do
       arg :likes_emails, :boolean
       arg :likes_phone_calls, non_null(:boolean)
 
+      middleware AuthMiddleware, api_key: "api_key"
       resolve &PreferenceResolver.update/2
     end
   end

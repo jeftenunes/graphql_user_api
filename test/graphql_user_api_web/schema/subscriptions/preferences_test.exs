@@ -1,7 +1,8 @@
 defmodule GraphqlUserApiWeb.Schema.Subscriptions.PreferencesTest do
-  alias GraphqlUserApi.Accounts
   use GraphqlUserApi.DataCase
   use GraphqlUserApiWeb.SubscriptionCase
+
+  alias GraphqlUserApi.Accounts
 
   @update_preferences_doc """
     mutation UpdateUserPreferences($userId: ID!, $likesFaxes: Boolean, $likesEmails: Boolean, $likesPhoneCalls: Boolean!) {
@@ -39,7 +40,9 @@ defmodule GraphqlUserApiWeb.Schema.Subscriptions.PreferencesTest do
                  }
                })
 
-      ref = push_doc(socket, @updated_preferences_doc, variables: %{userId: usr.id})
+      ref =
+        push_doc(socket, @updated_preferences_doc, variables: %{userId: usr.id})
+
       assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
       ref =

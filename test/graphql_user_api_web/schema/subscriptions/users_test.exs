@@ -39,6 +39,7 @@ defmodule GraphqlUserApiWeb.Schema.Subscriptions.UsersTest do
       socket: socket
     } do
       ref = push_doc(socket, @created_user_doc, variables: %{})
+
       assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
       ref =

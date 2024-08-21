@@ -47,7 +47,8 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
                      "likesFaxes" => true,
                      "likesEmails" => true
                    }
-                 }
+                 },
+                 context: %{api_key: "api_key"}
                )
 
       # assert
@@ -111,7 +112,8 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
             "likesFaxes" => true,
             "likesEmails" => true
           }
-        }
+        },
+        context: %{api_key: "api_key"}
       )
 
       assert {:ok, %{errors: errors}} =
@@ -123,7 +125,8 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
                      "likesFaxes" => true,
                      "likesEmails" => true
                    }
-                 }
+                 },
+                 context: %{api_key: "api_key"}
                )
 
       assert %{
@@ -156,7 +159,8 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
                    "id" => to_string(created_user.id),
                    "name" => "updated name",
                    "email" => "updated email"
-                 }
+                 },
+                 context: %{api_key: "api_key"}
                )
 
       # assert
@@ -172,7 +176,8 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
                    "id" => "0",
                    "name" => "updated name",
                    "email" => "updated email"
-                 }
+                 },
+                 context: %{api_key: "api_key"}
                )
 
       assert %{
@@ -237,7 +242,8 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
               "likesFaxes" => true,
               "likesEmails" => true
             }
-          }
+          },
+          context: %{api_key: "api_key"}
         )
 
       {:ok, %{data: _data2}} =
@@ -249,7 +255,8 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
               "likesFaxes" => true,
               "likesEmails" => true
             }
-          }
+          },
+          context: %{api_key: "api_key"}
         )
 
       assert {:ok, %{errors: errors}} =
@@ -262,7 +269,8 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.UserTest do
                      "likesFaxes" => true,
                      "likesEmails" => true
                    }
-                 }
+                 },
+                 context: %{api_key: "api_key"}
                )
 
       assert %{

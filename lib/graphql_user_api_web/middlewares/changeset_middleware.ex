@@ -4,6 +4,11 @@ defmodule GraphqlUserApiWeb.Middlewares.ChangesetMiddleware do
   alias GraphqlUserApi.ErrorHandling.Handler
 
   @impl true
+  def call(%{errors: ["not authorized"]} = resolution, _config) do
+    resolution
+  end
+
+  @impl true
   def call(%{errors: changeset_errors} = resolution, _config) do
     case changeset_errors do
       [] ->
