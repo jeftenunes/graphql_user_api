@@ -17,7 +17,9 @@ defmodule GraphqlUserApi.Application do
       GraphqlUserApiWeb.Endpoint,
       {Absinthe.Subscription, GraphqlUserApiWeb.Endpoint},
       GraphqlUserApi.Repo,
-      GraphqlUserApi.ResolverHits.Store
+      GraphqlUserApi.ResolverHits.Store,
+      {ConCache, name: :resolver_hits_store, ttl_check_interval: false}
+      # {GraphqlUserApi.ResolverHits.Store, {:resolver_hits_store, [:private, :named_table]}}
       # Start a worker by calling: GraphqlUserApi.Worker.start_link(arg)
       # {GraphqlUserApi.Worker, arg}
     ]

@@ -1,23 +1,26 @@
 defmodule GraphqlUserApi.ResolverHits.Store do
-  use Agent
+  use GenServer
 
-  @default_name ResolverHitsStore
-
-  def start_link(opts \\ []) do
-    opts = Keyword.put_new(opts, :name, @default_name)
-    Agent.start_link(fn -> %{} end, opts)
+  def start_link(_opts \\ []) do
+    GenServer.start_link(GraphqlUserApi.ResolverHits.Store, :no_state,
+      name: GraphqlUserApi.ResolverHits.Store
+    )
   end
 
-  def get_hits(agent \\ @default_name, resolver) do
-    Agent.get(agent, &Map.get(&1, resolver, 0))
+  @impl true
+  def init(_) do
+    {:ok, :no_state}
   end
 
-  def increment_hits_for(agent \\ @default_name, resolver) do
-    Agent.update(agent, fn state ->
-      case Map.get(state, resolver) do
-        nil -> Map.put(state, resolver, 1)
-        count_hit -> Map.put(state, resolver, count_hit + 1)
-      end
-    end)
+  def get_hits(resolver) do
+    case ConCache.get(:resolver_hits_store, resolver) do
+      nil -> 0
+      value -> value
+    end
+  end
+
+  def increment_hits_for(resolver) do
+    hit_count = get_hits(resolver)
+    ConCache.put(:resolver_hits_store, resolver, hit_count + 1)
   end
 end
