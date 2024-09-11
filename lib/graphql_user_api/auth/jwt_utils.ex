@@ -23,14 +23,10 @@ defmodule GraphqlUserApi.Auth.JwtUtils do
     if expected_signature != signature do
       {:error, "Invalid signature"}
     else
-      decoded_payload = base64url_decode(payload_encoded)
-
-      case Jason.decode(decoded_payload) do
-        {:ok, payload} ->
-          {:ok, payload}
-
-        {:error, _reason} ->
-          {:error, "Invalid payload"}
+      with {:ok, decoded_payload} <- base64url_decode(payload_encoded),
+           {:ok, payload} <- Jason.decode(decoded_payload) do
+        # verificar se o sub ta presente na ets c os tokens
+        {:ok, payload}
       end
     end
   end
