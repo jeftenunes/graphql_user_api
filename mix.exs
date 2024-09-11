@@ -5,7 +5,7 @@ defmodule GraphqlUserApi.MixProject do
     [
       app: :graphql_user_api,
       version: "0.1.0",
-      elixir: "~> 1.14",
+      elixir: "~> 1.17.1",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -49,7 +49,7 @@ defmodule GraphqlUserApi.MixProject do
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
       {:ecto_shorts, "~> 2.3"},
-      {:dataloader, "~> 1.0.0"}
+      {:dataloader, "~> 2.0.0"}
     ]
   end
 

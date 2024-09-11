@@ -198,13 +198,14 @@ defmodule GraphqlUserApiWeb.Schema.Queries.ResolverHitsTest do
                      "likesFaxes" => true,
                      "likesEmails" => true
                    }
-                 }
+                 },
+                 context: %{api_key: "api_key"}
                )
 
       assert {:ok, %{data: _}} =
                Absinthe.run(@user_by_id_doc, GraphqlUserApiWeb.Schema,
                  variables: %{
-                   "id" => to_string(created_usr["createUser"]["id"])
+                   "id" => created_usr["createUser"]["id"]
                  }
                )
 

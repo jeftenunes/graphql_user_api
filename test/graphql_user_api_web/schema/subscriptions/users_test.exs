@@ -1,5 +1,6 @@
 defmodule GraphqlUserApiWeb.Schema.Subscriptions.UsersTest do
   use GraphqlUserApi.DataCase
+  use GraphqlUserApiWeb.ConnCase
   use GraphqlUserApiWeb.SubscriptionCase
 
   @create_user_doc """
@@ -39,24 +40,26 @@ defmodule GraphqlUserApiWeb.Schema.Subscriptions.UsersTest do
       socket: socket
     } do
       ref = push_doc(socket, @created_user_doc, variables: %{})
+
+      payload = %{
+        "name" => "Name test",
+        "email" => "email@test.com",
+        "preferences" => %{
+          "likesFaxes" => true,
+          "likesEmails" => true
+        }
+      }
+
       assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
-      ref =
-        push_doc(socket, @create_user_doc,
-          variables: %{
-            "name" => "Name test",
-            "email" => "email@test.com",
-            "preferences" => %{
-              "likesFaxes" => true,
-              "likesEmails" => true
-            }
-          }
-        )
-
-      assert_reply ref, :ok, reply
+      response =
+        build_conn()
+        |> put_req_header("api_key", "api_key")
+        |> post("/graphql", %{query: @create_user_doc, variables: payload})
+        |> json_response(200)
 
       assert %{
-               data: %{
+               "data" => %{
                  "createUser" => %{
                    "name" => "Name test",
                    "email" => "email@test.com",
@@ -66,7 +69,7 @@ defmodule GraphqlUserApiWeb.Schema.Subscriptions.UsersTest do
                    }
                  }
                }
-             } = reply
+             } = response
 
       assert_push "subscription:data", data
 

@@ -1,22 +1,27 @@
 defmodule GraphqlUserApiWeb.Schema.Mutations.Users do
-  alias GraphqlUserApiWeb.Resolvers.UserResolver
   use Absinthe.Schema.Notation
+
+  alias GraphqlUserApiWeb.Resolvers.UserResolver
+  alias GraphqlUserApiWeb.Middlewares.AuthMiddleware
 
   object :users_mutations do
     field :create_user, :user do
-      arg(:name, :string)
-      arg(:email, :string)
-      arg(:preferences, :preference_input)
+      arg :name, :string
+      arg :email, :string
+      arg :preferences, non_null(:preference_input)
 
-      resolve(&UserResolver.create_user/2)
+      # in real life, one stores the api_key at a key vault, uses env vars and does a replace in deploy time
+      middleware AuthMiddleware, api_key: "api_key"
+      resolve &UserResolver.create_user/2
     end
 
     field :update_user, :user do
-      arg(:id, :id)
-      arg(:name, :string)
-      arg(:email, :string)
+      arg :name, :string
+      arg :id, non_null(:id)
+      arg :email, non_null(:string)
 
-      resolve(&UserResolver.update_user/2)
+      middleware AuthMiddleware, api_key: "api_key"
+      resolve &UserResolver.update_user/2
     end
   end
 end

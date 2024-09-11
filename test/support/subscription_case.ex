@@ -9,6 +9,8 @@ defmodule GraphqlUserApiWeb.SubscriptionCase do
       use Absinthe.Phoenix.SubscriptionTest,
         schema: GraphqlUserApiWeb.Schema
 
+      import Phoenix.ConnTest
+
       setup do
         {:ok, socket} =
           Phoenix.ChannelTest.connect(GraphqlUserApiWeb.Channels.UsersSocket, %{})

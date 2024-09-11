@@ -34,7 +34,8 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.PreferencesTest do
                    "userId" => to_string(created_user.id),
                    "likesFaxes" => false,
                    "likesPhoneCalls" => false
-                 }
+                 },
+                 context: %{api_key: "api_key"}
                )
 
       # assert
@@ -108,11 +109,12 @@ defmodule GraphqlUserApiWeb.Schema.Mutations.PreferencesTest do
                    "likesFaxes" => false,
                    "likesEmails" => true,
                    "likesPhoneCalls" => true
-                 }
+                 },
+                 context: %{api_key: "api_key"}
                )
 
       # assert
-      assert List.first(errors).message == "user not found"
+      assert List.first(errors).message == "not found"
     end
   end
 end

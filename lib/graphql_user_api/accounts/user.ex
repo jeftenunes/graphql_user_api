@@ -19,6 +19,7 @@ defmodule GraphqlUserApi.Accounts.User do
     user
     |> cast(attrs, @available_fields)
     |> validate_required(@available_fields)
+    |> unique_constraint(:email)
     |> cast_assoc(:preferences)
   end
 
