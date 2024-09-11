@@ -9,14 +9,6 @@ defmodule GraphqlUserApi.Accounts do
   alias GraphqlUserApi.Accounts.{User, Preference}
 
   def new_user(%{name: _name, email: _email, preferences: _preferences} = params) do
-    # case Actions.create(User, params) do
-    #   {:ok, created} ->
-    #     {:ok, created}
-
-    #   {:error, %{errors: errors} = changeset} ->
-    #     {:error, "erro"}
-    # end
-
     with {:ok, created} <- Actions.create(User, params) do
       {:ok, created}
     end
